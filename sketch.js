@@ -1,6 +1,6 @@
 const points = []
 const stack = []
-const max = 20
+const max = 50
 
 const width = 500
 const height = 500
