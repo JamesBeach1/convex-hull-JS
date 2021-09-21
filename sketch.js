@@ -1,12 +1,14 @@
 const points = []
-const stack = []
-const max = 50
+let max = 50
+let stack = []
 
 const width = 500
 const height = 500
-const margin = 50
+const margin = 80
 
 let start
+let slider
+let sliderLen = 160
 
 class Point {
     constructor(x, y) {
@@ -17,22 +19,43 @@ class Point {
 
 function setup() {
     createCanvas(width, height)
+
+    slider = createSlider(2, 150, max, 1)
+    slider.position((width - sliderLen) / 2, height + margin)
+    slider.style('width', '160px')
+
     for (let i = 0; i <= max; i += 1) {
-        points.push(new Point(random(width - margin), random(height - margin)))
+        points.push(new Point(random(margin , width - margin), random(margin ,height - margin)))
     }
 
     points.sort((a, b) => b.y - a.y);
-    start = points[0]
 
 }
 
-function draw() {
+function draw() { 
+    max = slider.value()
+
+    while(points.length != max){
+        if(points.length > max){
+            points.splice(random(points.length), 1)
+        }
+
+        else{
+            points.push(new Point(random(margin , width - margin), random(margin ,height - margin)))
+        }
+    }
+    clear()
+    stack = []
+    
+    text(max + " Points", 25, 25)
+
     stroke(0, 255, 0);
     strokeWeight(8);
     for (let p of points) {
         point(p.x, p.y);
     }
 
+    start = points[0]
     stroke(255, 0, 0)
     point(start.x, start.y)
 
@@ -46,9 +69,11 @@ function draw() {
     }
 
     strokeWeight(1)
-    for (let i = 0; i < stack.length - 1; i += 1) {
+    let i
+    for (i = 0; i < stack.length - 1; i += 1) {
         line(stack[i].x, stack[i].y, stack[i + 1].x, stack[i + 1].y)
     }
+    line(stack[i].x, stack[i].y, start.x, start.y)
 }
 
 function getPolarAngle(p0, p1) {
